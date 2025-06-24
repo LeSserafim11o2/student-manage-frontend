@@ -5,6 +5,7 @@ import StudentCard from './StudentCard';
 import { useNavigate } from "react-router-dom";
 
 const ShowStudentList = () => {
+  const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
@@ -16,14 +17,18 @@ const ShowStudentList = () => {
   const navigate= useNavigate();
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}`)
-      .then((response) => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}`);
         setStudents(response.data);
-      })
-      .catch((error) => {
-        console.log("Có lỗi khi lấy danh sách học sinh", error);
-      });
+      } catch (error) {
+        console.error("Có lỗi khi lấy danh sách học sinh", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
   }, []);
 
   // Hàm tính tuổi từ birthday
@@ -114,6 +119,14 @@ const ShowStudentList = () => {
         ))}
       </div>
     );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center bg-black/70 text-white text-xl font-semibold">
+        <p>Đang tải danh sách học sinh... chờ xíu nhaaa~ 🎒🧋</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-pink-900 py-12 px-6">
