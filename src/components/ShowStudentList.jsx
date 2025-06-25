@@ -35,11 +35,11 @@ const ShowStudentList = () => {
   const calculateAge = (birthday) => {
     if (!birthday) return 0;
     const birthDate = new Date(birthday);
+    if (isNaN(birthDate)) return 0;
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
     return age;
@@ -49,20 +49,27 @@ const ShowStudentList = () => {
   const sortStudents = (studentsToSort) => {
     if (!sortOption) return studentsToSort;
 
-    return [...studentsToSort].sort((a, b) => {
+    const sorted = [...studentsToSort];
+
+    sorted.sort((a, b) => {
+      const dateA = new Date(a.birthday);
+      const dateB = new Date(b.birthday);
+
       switch (sortOption) {
-        case "age-desc": // Tuổi từ lớn đến bé
-          return calculateAge(b.birthday) - calculateAge(a.birthday);
-        case "age-asc": // Tuổi từ bé đến lớn
-          return calculateAge(a.birthday) - calculateAge(b.birthday);
-        case "name-asc": // Tên từ A đến Z
-          return (a.name).localeCompare(b.name);
-        case "name-desc": // Tên từ Z đến A
-          return (b.name).localeCompare(a.name);
+        case "age-desc":
+          return dateA - dateB;
+        case "age-asc":
+          return dateB - dateA;
+        case "name-asc":
+          return a.name.localeCompare(b.name);
+        case "name-desc":
+          return b.name.localeCompare(a.name);
         default:
           return 0;
       }
     });
+
+    return sorted;
   };
 
   const startIndex = (currentPage - 1) * studentsPerPage;
