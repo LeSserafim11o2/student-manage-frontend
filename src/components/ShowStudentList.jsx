@@ -31,20 +31,6 @@ const ShowStudentList = () => {
     fetchStudents();
   }, []);
 
-  // Hàm tính tuổi từ birthday
-  const calculateAge = (birthday) => {
-    if (!birthday) return 0;
-    const birthDate = new Date(birthday);
-    if (isNaN(birthDate)) return 0;
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
-
   // Hàm sort students
   const sortStudents = (studentsToSort) => {
     if (!sortOption) return studentsToSort;
